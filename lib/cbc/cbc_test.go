@@ -1,7 +1,8 @@
-package lib
+package cbc
 
 import (
 	"bytes"
+	"cryptopals/lib/vectors"
 	"testing"
 )
 
@@ -10,9 +11,9 @@ import (
 func TestAesCbc(t *testing.T) {
 	key := []byte("YELLOW SUBMARINE")
 	iv := make([]byte, 16)
-	ct := Encrypt_aes_cbc(TestTextAlign16, key, iv)
+	ct := Encrypt_aes_cbc(vectors.TestTextAlign16, key, iv)
 	out := Decrypt_aes_cbc(ct, key, iv)
-	if !bytes.Equal(TestTextAlign16, out) {
-		t.Errorf("mismatch:\n%q\n%q", TestTextAlign16, out)
+	if !bytes.Equal(vectors.TestTextAlign16, out) {
+		t.Errorf("mismatch:\n%q\n%q", vectors.TestTextAlign16, out)
 	}
 }

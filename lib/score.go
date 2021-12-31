@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"cryptopals/lib/xor"
 	"fmt"
 )
 
@@ -15,7 +16,7 @@ type Score struct {
 func GetScores(bin []byte) (scores Scoremap) {
 	var x byte
 	for x = 0; x < 255; x++ {
-		scores[x] = ScoreSeq(EncryptXor(bin, []byte{x}))
+		scores[x] = ScoreSeq(xor.EncryptXor(bin, []byte{x}))
 	}
 	//showtopn(bin,scores,5)
 	return
@@ -76,7 +77,7 @@ func Showtopn(bin []byte, scores Scoremap, n int) {
 	tops := Topn(scores, n)
 	for _, t := range tops {
 		if t.S > len(bin) {
-			fmt.Printf("0x%x %d %s\n", t.X, t.S, string(EncryptXor(bin, []byte{t.X})))
+			fmt.Printf("0x%x %d %s\n", t.X, t.S, string(xor.EncryptXor(bin, []byte{t.X})))
 		}
 	}
 }

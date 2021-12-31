@@ -1,11 +1,10 @@
 package main
 
 import (
-	"cryptopals/lib"
+	"cryptopals/lib/ecb"
 	"cryptopals/lib/key"
+	"cryptopals/lib/pkcs7"
 	"fmt"
-
-	// "log"
 	"strings"
 )
 
@@ -109,11 +108,11 @@ func profile_for(email string) (p *profile) {
 
 func (p *profile) encrypt(key []byte) []byte {
 	pt := p.encode()
-	padded := lib.Pkcs7pad([]byte(pt), 16)
-	return lib.Encrypt_aes_ecb(padded, key)
+	padded := pkcs7.Pkcs7pad([]byte(pt), 16)
+	return ecb.Encrypt_aes_ecb(padded, key)
 }
 func decrypt(ct []byte, key []byte) (p *profile) {
-	pt := lib.Decrypt_aes_ecb(ct, key)
+	pt := ecb.Decrypt_aes_ecb(ct, key)
 	return decode(string(pt))
 }
 
@@ -135,7 +134,7 @@ outer:
 		//fmt.Println(b, i, "start")
 		for ; i > 0; i-- {
 			//fiddle with characters until p.role[0] changes
-			copy(workingCT, lib.Pkcs7strip(baselineCT, 16))
+			copy(workingCT, pkcs7.Pkcs7strip(baselineCT, 16))
 			workingCT[i] = b //'0' //^(workingCT[i])
 			w := extract(workingCT)
 			if w == nil {

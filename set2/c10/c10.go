@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"cryptopals/lib"
+	"cryptopals/lib/cbc"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -50,6 +50,6 @@ func main() {
 
 	key := []byte("YELLOW SUBMARINE")
 	iv := make([]byte, 16)
-	out := lib.Decrypt_aes_cbc(buf, key, iv)
+	out := cbc.Decrypt_aes_cbc(buf, key, iv)
 	fmt.Printf("out=%s\n", string(out))
 }

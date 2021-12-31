@@ -1,7 +1,9 @@
 package main
 
 import (
-	"cryptopals/lib"
+	"cryptopals/lib/cbc"
+	"cryptopals/lib/ecb"
+	"cryptopals/lib/pkcs7"
 	"fmt"
 	"math/rand"
 	"os"
@@ -22,16 +24,16 @@ func encryption_oracle(plaintext []byte) (ciphertext []byte) {
 	typ := encType(rand.Intn(2) + 1)
 	prePadl := rand.Intn(5) + 5
 	postPadl := rand.Intn(5) + 5
-	var key []byte
-	key = randBytes16()
+
+	key := randBytes16()
 	pt := append(fill('j', prePadl), plaintext...)
 	pt = append(pt, fill('k', postPadl)...)
-	pt = lib.Pkcs7pad(pt, 16)
-	if typ == cbc {
+	pt = pkcs7.Pkcs7pad(pt, 16)
+	if typ == CBC {
 		iv := randBytes16()
-		ciphertext = lib.Encrypt_aes_cbc(pt, key, iv)
+		ciphertext = cbc.Encrypt_aes_cbc(pt, key, iv)
 	} else {
-		ciphertext = lib.Encrypt_aes_ecb(pt, key)
+		ciphertext = ecb.Encrypt_aes_ecb(pt, key)
 	}
 	fmt.Printf("type=%s\n", typ)
 	return
@@ -63,16 +65,16 @@ type encType int
 
 const (
 	unknown encType = iota
-	ecb
-	cbc
+	ECB
+	CBC
 )
 const blockLen = 16
 
 func (e encType) String() string {
 	switch e {
-	case ecb:
+	case ECB:
 		return "ECB"
-	case cbc:
+	case CBC:
 		return "CBC"
 	case unknown:
 		return "unknown"
@@ -91,10 +93,10 @@ func detect_ecb_cbc(data []byte) encType {
 		data = data[16:]
 		_, ok := blocks[blk]
 		if ok {
-			return ecb
+			return ECB
 		}
 		blocks[blk] = nil
 	}
 
-	return cbc
+	return CBC
 }

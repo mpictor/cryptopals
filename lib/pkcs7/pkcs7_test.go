@@ -1,4 +1,4 @@
-package lib
+package pkcs7
 
 import (
 	"bytes"

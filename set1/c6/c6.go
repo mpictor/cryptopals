@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"cryptopals/lib"
+	"cryptopals/lib/hamming"
+	"cryptopals/lib/xor"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -43,7 +45,7 @@ func main() {
 			key[i] = s.X
 		}
 		keys[idx].k = key
-		keys[idx].s = lib.ScoreSeq(lib.EncryptXor(data[:128], key))
+		keys[idx].s = lib.ScoreSeq(xor.EncryptXor(data[:128], key))
 	}
 	var best keyscore
 	for _, k := range keys {
@@ -53,25 +55,14 @@ func main() {
 		}
 	}
 	fmt.Println(string(best.k), best.s)
-	fmt.Println(string(lib.EncryptXor(data, best.k)))
-}
-
-//hamming distance for key of size s. goes through entire file, giving a more accurate number
-func longHam(s int, data []byte) (h int) {
-	nb := len(data) / s
-	for i := 0; i < nb; i++ {
-		a := data[i*s : (i+1)*s]
-		b := data[(i+1)*s : (i+2)*s]
-		h += lib.Hamdist(a, b)
-	}
-	return
+	fmt.Println(string(xor.EncryptXor(data, best.k)))
 }
 
 //returns best 3 key sizes in [min,max] for data
 func keysizeSearch(min, max int, data []byte) (bestSizes [3]int) {
 	var tops = []int{66666, 66666, 66666}
 	for keysize := min; keysize <= max; keysize++ {
-		s := longHam(keysize, data)
+		s := hamming.LongHam(keysize, data)
 		if s < tops[2] {
 			if s < tops[1] {
 				if s < tops[0] {

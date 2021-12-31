@@ -2,9 +2,7 @@ package main
 
 import (
 	"bufio"
-	"crypto/aes"
-	//"crypto/cipher"
-	"cryptopals/lib"
+	"cryptopals/lib/ecb"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -24,6 +22,6 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-	out := lib.Decrypt_aes_ecb(buf, []byte("YELLOW SUBMARINE"))
+	out := ecb.Decrypt_aes_ecb(buf, []byte("YELLOW SUBMARINE"))
 	fmt.Println(string(out))
 }

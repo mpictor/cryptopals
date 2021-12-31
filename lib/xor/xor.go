@@ -1,4 +1,4 @@
-package lib
+package xor
 
 func EncryptXor(in, key []byte) (out []byte) {
 	out = make([]byte, len(in))

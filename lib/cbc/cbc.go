@@ -1,7 +1,8 @@
-package lib
+package cbc
 
 import (
 	"crypto/aes"
+	"cryptopals/lib/xor"
 	"fmt"
 )
 
@@ -26,7 +27,7 @@ func Encrypt_aes_cbc(plaintext, key, iv []byte) []byte {
 		} else {
 			xin = ciphertext[offs-bs : offs]
 		}
-		x := EncryptXor(plaintext[offs:offs+bs], xin)
+		x := xor.EncryptXor(plaintext[offs:offs+bs], xin)
 
 		block.Encrypt(ciphertext[offs:], x)
 		offs += bs
@@ -58,7 +59,7 @@ func Decrypt_aes_cbc(ciphertext, key, iv []byte) []byte {
 		}
 
 		block.Decrypt(tmp, ciphertext[offs:])
-		x := EncryptXor(tmp, xin)
+		x := xor.EncryptXor(tmp, xin)
 		copy(plaintext[offs:offs+bs], x)
 		offs += bs
 	}
