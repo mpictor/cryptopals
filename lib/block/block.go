@@ -17,3 +17,15 @@ func Find_blksize(enc func(pt []byte) []byte) (bs int) {
 	}
 	return 0
 }
+
+//count off by n, for the non-sentient
+func Transpose(ks int, data []byte) (blocks [][]byte) {
+	for b := 0; b < ks; b++ {
+		var blk []byte
+		for i := b; i < len(data); i += ks {
+			blk = append(blk, data[i])
+		}
+		blocks = append(blocks, blk)
+	}
+	return
+}

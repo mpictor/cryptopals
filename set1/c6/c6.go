@@ -3,7 +3,8 @@ package main
 import (
 	"bufio"
 	"cryptopals/lib"
-	"cryptopals/lib/hamming"
+	"cryptopals/lib/block"
+	"cryptopals/lib/key"
 	"cryptopals/lib/xor"
 	"encoding/base64"
 	"fmt"
@@ -11,7 +12,7 @@ import (
 )
 
 // https://cryptopals.com/sets/1/challenges/6
-// stopped with good hamming code - need to work on the file now
+
 func main() {
 	var data []byte
 	f, err := os.Open("c6.txt")
@@ -29,14 +30,15 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-	ks := keysizeSearch(2, 40, data)
+	ks := key.SizeSearch(2, 40, data)
+	fmt.Println("best key sizes:", ks)
 	type keyscore struct {
 		k []byte
 		s int
 	}
 	var keys [3]keyscore
 	for idx, s := range ks {
-		tb := transposeBlocks(s, data)
+		tb := block.Transpose(s, data)
 		scores := make([]lib.Scoremap, len(tb))
 		key := make([]byte, len(tb))
 		for i, b := range tb {
@@ -54,47 +56,6 @@ func main() {
 			best.k = k.k
 		}
 	}
-	fmt.Println(string(best.k), best.s)
-	fmt.Println(string(xor.EncryptXor(data, best.k)))
-}
-
-//returns best 3 key sizes in [min,max] for data
-func keysizeSearch(min, max int, data []byte) (bestSizes [3]int) {
-	var tops = []int{66666, 66666, 66666}
-	for keysize := min; keysize <= max; keysize++ {
-		s := hamming.LongHam(keysize, data)
-		if s < tops[2] {
-			if s < tops[1] {
-				if s < tops[0] {
-					tops[2] = tops[1]
-					tops[1] = tops[0]
-					tops[0] = s
-					bestSizes[2] = bestSizes[1]
-					bestSizes[1] = bestSizes[0]
-					bestSizes[0] = keysize
-				} else {
-					tops[2] = tops[1]
-					tops[1] = s
-					bestSizes[2] = bestSizes[1]
-					bestSizes[1] = keysize
-				}
-			} else {
-				tops[2] = s
-				bestSizes[2] = keysize
-			}
-		}
-	}
-	return
-}
-
-//count off by n, for the non-sentient
-func transposeBlocks(ks int, data []byte) (blocks [][]byte) {
-	for b := 0; b < ks; b++ {
-		var blk []byte
-		for i := b; i < len(data); i += ks {
-			blk = append(blk, data[i])
-		}
-		blocks = append(blocks, blk)
-	}
-	return
+	fmt.Printf("best key: score=%d key=%q\n", best.s, string(best.k))
+	fmt.Println(string(xor.EncryptXor(data, best.k))[:60], "...")
 }
