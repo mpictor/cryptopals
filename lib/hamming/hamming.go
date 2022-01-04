@@ -24,6 +24,9 @@ func Hamdist(a, b []byte) (ham int) {
 func LongHam(s int, data []byte) (h int) {
 	nb := len(data) / s
 	for i := 0; i < nb; i++ {
+		if (i+2)*s >= len(data) {
+			return
+		}
 		a := data[i*s : (i+1)*s]
 		b := data[(i+1)*s : (i+2)*s]
 		h += Hamdist(a, b)

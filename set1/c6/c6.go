@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"cryptopals/lib"
 	"cryptopals/lib/block"
 	"cryptopals/lib/key"
 	"cryptopals/lib/xor"
@@ -39,15 +38,15 @@ func main() {
 	var keys [3]keyscore
 	for idx, s := range ks {
 		tb := block.Transpose(s, data)
-		scores := make([]lib.Scoremap, len(tb))
-		key := make([]byte, len(tb))
+		scores := make([]key.Scoremap, len(tb))
+		keybytes := make([]byte, len(tb))
 		for i, b := range tb {
-			scores[i] = lib.GetScores(b)
-			s := lib.Top(scores[i], nil)
-			key[i] = s.X
+			scores[i] = key.GetScores(b, key.PTAsciiText)
+			s := key.Top(scores[i], nil)
+			keybytes[i] = s.X
 		}
-		keys[idx].k = key
-		keys[idx].s = lib.ScoreSeq(xor.EncryptXor(data[:128], key))
+		keys[idx].k = keybytes
+		keys[idx].s = key.ScoreSeq(xor.EncryptXor(data[:128], keybytes), key.PTAsciiText)
 	}
 	var best keyscore
 	for _, k := range keys {
