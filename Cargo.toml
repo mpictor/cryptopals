@@ -1,0 +1,11 @@
+[package]
+name = "cryptopals"
+version = "0.1.0"
+edition = "2024"
+[lib]
+name="crypto"
+path="sets/lib.rs"
+
+[dependencies]
+base64 = "0.22.1"
+hex-literal = "1.0.0"
