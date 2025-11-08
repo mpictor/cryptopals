@@ -8,4 +8,5 @@ path="sets/lib.rs"
 
 [dependencies]
 base64 = "0.22.1"
+hex = "0.4.3"
 hex-literal = "1.0.0"
